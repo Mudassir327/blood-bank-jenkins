@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # MySQL Database Service
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: your_mysql_password
+      MYSQL_DATABASE: blood_bank
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+
+  # Spring Boot Backend Service
+  backend:
+    build:
+      context: ./blood-bank-api       # folder containing backend Dockerfile
+    container_name: blood-bank-backend
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/blood_bank
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: your_mysql_password
+    depends_on:
+      - db
+
+  # React Frontend Service
+  frontend:
+    build:
+      context: ./blood_bank/blood_bank   # nested folder containing frontend Dockerfile, src/, public/
+    container_name: blood-bank-frontend
+    ports:
+      - "3000:80"                        # maps container port 80 (Nginx) to host 3000
+    depends_on:
+      - backend
+
+volumes:
+  db-data:
