@@ -17,13 +17,13 @@ pipeline {
         }
 
         stage('Build Backend') {
-            steps {
-                dir('blood-bank-api') {
-                    // Use bat for Windows CMD
-                    bat 'mvnw clean package -DskipTests'
-                }
-            }
+    steps {
+        dir('blood-bank-api') {
+            bat 'mvnw.cmd clean package -DskipTests'
         }
+    }
+}
+
 
         stage('Build Frontend') {
             steps {
